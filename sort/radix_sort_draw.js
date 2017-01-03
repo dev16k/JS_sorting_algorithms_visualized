@@ -1,16 +1,14 @@
-function radix_sort_draw(gs)
+function radix_sort_draw(gs, arr)
 {
-  var arr = gs.arr.slice();
-
-  var base = 4; //sets the base
-  var buckets = []; //array to hold the buckets
-  for (var i = 0; i < base; i++) //creates a number of buckets equal to the base
+  var base = 4;
+  var buckets = [];
+  for (var i = 0; i < base; i++)
   {
     buckets.push([]);
   }
 
   var max = 0;
-  for (var i = 0; i < arr.length; i++) //finds highest element in array
+  for (var i = 0; i < arr.length; i++)
   {
     gs.compare([i, max]);
     if (arr[i] > arr[max])
@@ -26,9 +24,10 @@ function radix_sort_draw(gs)
     for (var i = 0; i < arr.length; i++)
     {
       gs.read(i);
+      gs.set();
+
       var x = Math.floor((arr[i] % Math.pow(base, digit + 1)) / Math.pow(base, digit));
       buckets[x].push(arr[i]);
-      gs.set();
     }
 
     var i = 0;
@@ -37,8 +36,9 @@ function radix_sort_draw(gs)
       for (var k = 0; k < buckets[j].length; k++)
       {
         gs.read();
-        arr[i] = buckets[j][k];
         gs.set(i, buckets[j][k]);
+
+        arr[i] = buckets[j][k];
         i++;
       }
       buckets[j] = [];

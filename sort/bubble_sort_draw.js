@@ -1,7 +1,5 @@
-function bubble_sort_draw(gs)
+function bubble_sort_draw(gs, arr)
 {
-  var arr = gs.arr.slice();
-
   if (Array.isArray(arr))
   {
     var n = arr.length - 1;

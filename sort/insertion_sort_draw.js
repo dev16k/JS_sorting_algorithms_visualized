@@ -1,7 +1,5 @@
-function insertion_sort_draw(gs)
+function insertion_sort_draw(gs, arr)
 {
-  var arr = gs.arr.slice();
-
   if (Array.isArray(arr))
   {
     for (var i = 1; i < arr.length; i++)

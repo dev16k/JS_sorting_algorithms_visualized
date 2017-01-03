@@ -2,8 +2,7 @@ function quick_sort_draw(gs, arr, low, high)
 {
   if (low == undefined || high == undefined)
   {
-    var array = gs.arr.slice();
-    quick_sort_draw(gs, array, 0, array.length - 1);
+    quick_sort_draw(gs, arr, 0, arr.length - 1);
   }
   else if(low < high)
   {

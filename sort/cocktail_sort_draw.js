@@ -1,7 +1,5 @@
-function cocktail_sort_draw(gs)
+function cocktail_sort_draw(gs, arr)
 {
-  var arr = gs.arr.slice();
-
   var lower = 1;
   var upper = arr.length - 1;
   var swapped;

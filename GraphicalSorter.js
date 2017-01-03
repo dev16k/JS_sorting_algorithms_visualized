@@ -41,7 +41,7 @@ function GraphicalSorter(arr, canvas, func, name)
 
   /*executes the sorting function which calls
   swap()/compare()/... when changing the array*/
-  func(this);
+  func(this, arr.slice());
 
   //sets final to true when every action has been executed
   var self = this;

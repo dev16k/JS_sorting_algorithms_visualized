@@ -1,7 +1,5 @@
-function merge_sort_draw(gs)
+function merge_sort_draw(gs, arr)
 {
-  var arr = gs.arr.slice();
-
   merge_sort(arr, 0, arr.length - 1, gs);
 }
 
@@ -66,7 +64,7 @@ function merge(arr, low, mid, high, gs)
   {
     gs.read();
     gs.set(low, sorted[k]);
-    
+
     arr[low] = sorted[k];
     low++;
   }
