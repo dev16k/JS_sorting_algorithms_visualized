@@ -1,4 +1,13 @@
-var GraphicalSorter = function(arr, canvas, func, name)
+/**
+ * Creates an instance of GraphicalSorter.
+ *
+ * @constructor
+ * @param {array} arr - The array that should be sorted.
+ * @param {HTMLCanvasElement} canvas - The canvas on which the array should be drawn.
+ * @param {function} func - The sorting function which will be given this object as a parameter
+ * @param {string} name - Optional name which will be displayed when the array has been sorted.
+ */
+function GraphicalSorter(arr, canvas, func, name)
 {
   this.canvas = canvas;
   this.scaleX = this.canvas.width / arr.length;
@@ -20,24 +29,30 @@ var GraphicalSorter = function(arr, canvas, func, name)
   this.actions = [];
   this.final = false;
 
-  this.blue = [];
-  this.red = [];
+  this.blue = []; //elements to be drawn blue
+  this.red = []; //elements to be drawn red
 
-  this.comparisions = 0;
-  this.reads = 0;
-  this.writes = 0;
+  //various counters
+  this.comparisions = 0; //number of comparisions
+  this.reads = 0; //number of read-accesses to the array
+  this.writes = 0; //number of write-accesses to the array
 
   this.draw();
 
+  /*executes the sorting function which calls
+  swap()/compare()/... when changing the array*/
   func(this);
 
+  //sets final to true when every action has been executed
   var self = this;
   this.actions.push(function(){self.final = true;});
-
 };
 
-//executes the first function of the 'actions'-array and removes it
-//return whether a function has been executed
+
+/**executes the first function of the actions[] and removes it.
+ *
+ * @return {boolean} - True if a function has been executed.
+ */
 GraphicalSorter.prototype.executeAction = function()
 {
   if(this.actions.length > 0)
@@ -51,15 +66,20 @@ GraphicalSorter.prototype.executeAction = function()
   return false;
 }
 
+
+/**
+ * Draws the array.
+ */
 GraphicalSorter.prototype.draw = function()
 {
   this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
-  if (this.final)
+  if (this.final) //draws differently if the array is sorted
   {
     this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
     for (var i = 0; i < this.arr.length; i++)
     {
 
+      //colors every 2nd element slightly different
       if (i % 2 === 1) this.ctx.fillStyle = '#009900';
       else this.ctx.fillStyle = '#008800';
 
@@ -81,8 +101,11 @@ GraphicalSorter.prototype.draw = function()
     for (var i = 0; i < this.arr.length; i++)
     {
 
+      //colors elements with indexes in blue[] blue
       if (this.blue.indexOf(i) != -1) this.ctx.fillStyle = '#0000BB';
+      //colors elements with indexes in red[] red
       else if (this.red.indexOf(i) != -1) this.ctx.fillStyle = '#BB0000';
+      //colors every 2nd element slightly different
       else if (i % 2 === 1) this.ctx.fillStyle = '#FFFFFF';
       else this.ctx.fillStyle = '#EEEEEE';
 
@@ -91,8 +114,10 @@ GraphicalSorter.prototype.draw = function()
   }
 }
 
-//----------callbacks to be added to actions[]----------------------------------
+
+//callbacks to be added to actions[]
 // these are NOT supposed to be called by anyone but the GraphicalSorter-prototype functions
+/** @private */
 GraphicalSorter.prototype.highlight = function(is)
 {
   for (let i of is)
@@ -101,6 +126,7 @@ GraphicalSorter.prototype.highlight = function(is)
   }
 }
 
+/** @private */
 GraphicalSorter.prototype.swapValues = function(index1, index2)
 {
   var tmp = this.arr[index1];
@@ -110,19 +136,31 @@ GraphicalSorter.prototype.swapValues = function(index1, index2)
   this.blue.push(index2);
 }
 
+/** @private */
 GraphicalSorter.prototype.changeValue = function(index, value)
 {
   this.arr[index] = value;
   this.blue.push(index);
 }
-//----------end of callbacks----------------------------------------------------
 
 
 
-//functions to be called by the sorting function when cangeing the array--------
+/*functions to be called by the sorting function when changeing the array
 
-/*they dont return anything or change anything in the array right when they are
+they add the callback functions above to the actions-array which will be
+executed when calling the executeAction()-function
+
+they dont return anything or change anything in the array right when they are
 called so you still have to swap/compare/... the elements by yourself*/
+
+/**
+ * Adds the highlight()-callback which colors the given elements differently
+ * to the later executed actions[] and increases the counters.
+ *
+ * Is to be called when comparing elements.
+ *
+ * @param {array} is - Optional array of the compared elements' indexes.
+ */
 GraphicalSorter.prototype.compare = function(is)
 {
   if (is.length != 0)
@@ -135,6 +173,14 @@ GraphicalSorter.prototype.compare = function(is)
   this.reads++;
 }
 
+/**
+ * Adds the swapValues()-callback which swaps 2 elements to the later executed
+ * actions[] and increases the counters.
+ * Is to be called when swapping 2 elements of the array.
+ *
+ * @param {number} index1 - One of the swapped elements' index.
+ * @param {number} index2 - The other element's index.
+ */
 GraphicalSorter.prototype.swap = function(index1, index2)
 {
   var self = this;
@@ -145,6 +191,16 @@ GraphicalSorter.prototype.swap = function(index1, index2)
   this.writes++;
 }
 
+/**
+ * Adds the changeValue()-callback to the later executed actions[] and
+ * increases the counters.
+ *
+ * Is to be called when changeing a single element in the array.
+ * Should not be called in addition to calling swap().
+ *
+ * @param {number} index - Optional index of the element to be changed.
+ * @param {number} value - The value the element should be changed to. Necessary if given an index.
+ */
 GraphicalSorter.prototype.set = function(index, value)
 {
   if (index != undefined)
@@ -155,6 +211,15 @@ GraphicalSorter.prototype.set = function(index, value)
   this.writes++;
 };
 
+/**
+ * Adds the highlight()-callback which colors the given elements differently
+ * to the later executed actions[] and increases the counters.
+ *
+ * Should be called when reading a single value from the array.
+ * Should not be called in addition to swap() or compare() etc.
+ *
+ * @param {number} index - Optional index of the element being read.
+ */
 GraphicalSorter.prototype.read = function(index)
 {
   if (index != undefined)
@@ -164,4 +229,3 @@ GraphicalSorter.prototype.read = function(index)
   }
   this.reads++;
 }
-//
