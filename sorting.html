@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sorting</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body id="body"  style="background-color:#000000">
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
+    <canvas id="canvas3"></canvas>
+    <canvas id="canvas4"></canvas>
+    <canvas id="canvas5"></canvas>
+    <canvas id="canvas6"></canvas>
+    <canvas id="canvas7"></canvas>
+
+    <script src="GraphicalSorter.js" type="text/javascript"></script>
+
+    <script src="./sort/bubble_sort_draw.js" type="text/javascript"></script>
+    <script src="./sort/insertion_sort_draw.js" type="text/javascript"></script>
+    <script src="./sort/selection_sort_draw.js" type="text/javascript"></script>
+    <script src="./sort/merge_sort_draw.js" type="text/javascript"></script>
+    <script src="./sort/cocktail_sort_draw.js" type="text/javascript"></script>
+    <script src="./sort/radix_sort_draw.js" type="text/javascript"></script>
+    <script src="./sort/quick_sort_draw.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+      function resizeCanvas()
+      {
+        var c = document.getElementsByTagName('canvas');
+        for (var i = 0; i < c.length; i++)
+        {
+          c.item(i).width = Math.round(window.innerWidth / 3);
+          c.item(i).height = Math.round(window.innerHeight / 3);
+        }
+      }
+
+      function executeActions()
+      {
+        var actionsleft = false;
+        for (var i = 0; i < sorters.length; i++)
+        {
+          if(sorters[i].actions.length > 0)
+          {
+            actionsleft = true;
+            sorters[i].executeAction();
+          }
+        }
+        if (actionsleft == true)
+        {
+          requestAnimationFrame(executeActions);
+        }
+      }
+
+      //creating an array of randomly generated numbers
+      var max = 30;
+      var length = 60;
+      arr = [];
+      for (var i = 0; i < length; i++)
+      {
+        arr.push(Math.floor(Math.random() * max));
+      }
+
+      resizeCanvas();
+
+      //adding every sorter
+      var sorters = [];
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas1'), bubble_sort_draw, "bubble sort"));
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas2'), selection_sort_draw, "slection sort"));
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas3'), insertion_sort_draw, "insertion sort"));
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas4'), merge_sort_draw, "merge sort"));
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas5'), cocktail_sort_draw, "cocktail sort"));
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas6'), radix_sort_draw, "radix sort"));
+      sorters.push(new GraphicalSorter(arr, document.getElementById('canvas7'), quick_sort_draw, "quick sort"));
+
+      requestAnimationFrame(executeActions);
+    </script>
+  </body>
+</html>
