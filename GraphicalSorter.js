@@ -18,13 +18,9 @@ function GraphicalSorter(arr, canvas, func, name)
   else this.name = func.name;
 
   if (Math.max(...this.arr) > this.canvas.height / this.scaleX)
-  {
-    this.scaleY = this.canvas.height / Math.max(...this.arr);
-  }
+  this.scaleY = this.canvas.height / Math.max(...this.arr);
   else
-  {
-    this.scaleY = this.scaleX;
-  }
+  this.scaleY = this.scaleX;
 
   this.actions = [];
   this.final = false;
@@ -49,7 +45,8 @@ function GraphicalSorter(arr, canvas, func, name)
 };
 
 
-/**executes the first function of the actions[] and removes it.
+/**
+ * executes the first function of the actions[] and removes it.
  *
  * @return {boolean} - True if a function has been executed.
  */
@@ -86,11 +83,13 @@ GraphicalSorter.prototype.draw = function()
       this.ctx.fillRect(i * this.scaleX, this.canvas.height, this.scaleX, - this.arr[i] * this.scaleY);
     }
 
+    //sets text style
     this.ctx.fillStyle = '#FFFFFF';
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
     var fontsize = this.ctx.canvas.height / 7;
     this.ctx.font = fontsize + "px Courier New";
+    //draws name and counters
     this.ctx.fillText(this.name, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 - fontsize, this.ctx.canvas.width);
     this.ctx.fillText("comparisions:" + this.comparisions, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, this.ctx.canvas.width);
     this.ctx.fillText("read-accesses:" + this.reads, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2 + fontsize, this.ctx.canvas.width);
@@ -169,8 +168,7 @@ GraphicalSorter.prototype.compare = function(is)
     this.actions.push(function(){self.highlight(is);});
   }
   this.comparisions++;
-  this.reads++;
-  this.reads++;
+  this.reads += 2;
 }
 
 /**
@@ -185,10 +183,8 @@ GraphicalSorter.prototype.swap = function(index1, index2)
 {
   var self = this;
   this.actions.push(function(){self.swapValues(index1, index2);});
-  this.reads++;
-  this.reads++;
-  this.writes++;
-  this.writes++;
+  this.reads += 2;
+  this.writes += 2;
 }
 
 /**
